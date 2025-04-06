@@ -7,17 +7,17 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface ContactDao {
 	@Select(value = "select * from contact")
-	public List<Contact> findAll();
+	List<Contact> findAll();
 	
-	@Insert("insert into contact(cno, name, address, tel) values(cno_seq.nextval, #{name}, #{address}, #{tel})")
-	public boolean save(Contact contact);
+	@Insert("insert into contact(cno, name, address, tel) values(contact_seq.nextval, #{name}, #{address}, #{tel})")
+	boolean save(Contact contact);
 	
 	@Select("select * from contact where cno=#{cno} and rownum=1")
-	public Contact findById(int cno);
+	Contact findById(int cno);
 	
 	@Update("update contact set address=#{address}, tel=#{tel} where cno=#{cno} and rownum=1")
-	public boolean update(Contact contact);
+	boolean update(Contact contact);
 	
 	@Delete("delete from contact where cno=#{cno} and rownum=1")
-	public boolean delete(int cno);
+	boolean delete(int cno);
 }

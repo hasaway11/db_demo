@@ -5,10 +5,13 @@ import java.time.LocalDate;
 import lombok.*;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@Builder
 @ToString
 public class Supply {
 	private int sno;
 	private String name;
-	private LocalDate regDate = LocalDate.now();
+	private LocalDate regDate;
 	private int quantity;
 }

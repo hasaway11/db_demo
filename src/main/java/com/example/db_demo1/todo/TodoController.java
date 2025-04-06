@@ -5,41 +5,44 @@ import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.*;
 
-import java.util.*;
-
 @Controller
 public class TodoController {
   @Autowired
-  private TodoService todoService;
+  private TodoDao todoDao;
+
+  @GetMapping("/todo/add")
+  public ModelAndView save() {
+    return new ModelAndView("todo/add");
+  }
+
+  @PostMapping("/todo/add")
+  public ModelAndView save(@ModelAttribute Todo todo) {
+    todoDao.save(todo);
+    return new ModelAndView("redirect:/todo/list");
+  }
 
   @GetMapping("/todo/list")
   public ModelAndView findAll() {
-    return new ModelAndView("todo/list");
+    return new ModelAndView("todo/list").addObject("todos", todoDao.findAll());
   }
 
   @GetMapping("/todo/read")
   public ModelAndView findById(@RequestParam Integer tno) {
-    Optional<Todo> result = todoService.findById(tno);
-    if(result.isEmpty())
+    Todo todo = todoDao.findById(tno);
+    if(todo==null)
       return new ModelAndView("redirect:/todo/list");
-    return new ModelAndView("todo/read").addObject("todo", result.get());
-  }
-
-  @PostMapping("/todo/write")
-  public ModelAndView save(@ModelAttribute Todo todo) {
-    int tno = todoService.save(todo);
-    return new ModelAndView("redirect:/todo/read");
+    return new ModelAndView("todo/read").addObject("todo", todo);
   }
 
   @PostMapping("/todo/finish")
   public ModelAndView finish(@RequestParam Integer tno) {
-    todoService.finish(tno);
-    return new ModelAndView("redirect:/todo/list");
+    todoDao.finish(tno);
+    return new ModelAndView("redirect:/todo/read?tno=" + tno);
   }
 
   @PostMapping("/todo/delete")
   public ModelAndView delete(@RequestParam Integer tno) {
-    todoService.delete(tno);
+    todoDao.delete(tno);
     return new ModelAndView("redirect:/todo/list");
   }
 }
